@@ -18,7 +18,16 @@ const client = new Client({
     Partials.User,
     Partials.GuildMember,
     Partials.Reaction
-  ]
+  ],
+  presence: {
+        status: 'online',
+        afk: false,
+        activities: [{
+            name: "Bonjour",
+            type: "PLAYING",
+        }],
+    },
+
 });
 
 // Host the bot:

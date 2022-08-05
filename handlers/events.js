@@ -16,7 +16,6 @@ module.exports = (client) => {
 				console.log(`[HANDLER - EVENTS] Couldn't load the file ${file}. missing name or aliases.`.red)
 				continue;
 			}
-      
 		}
 	});
 }
