@@ -1,8 +1,8 @@
 const { EmbedBuilder, PermissionsBitField, ActivityType } = require("discord.js");
 const client = require("../../index");
 const config = require("../../config/config.json");
-const { QuickDB } = require("quick.db");
-const db = new QuickDB();
+const axios = require ("axios")
+require('dotenv').config();
 
 module.exports = {
   name: "messageCreate",
@@ -11,6 +11,8 @@ module.exports = {
 client.on("messageCreate", async (message) => {
   if (message.channel.type !== 0) return;
   if (message.author.bot) return;
+
+  console.log(message.content)
 
   let feur_list = [
     "feur",
@@ -29,7 +31,7 @@ client.on("messageCreate", async (message) => {
     "۞eur",
     "f۞ur",
     "fe۞r",
-    "feu۞"
+    "feu۞",
   ];
 
   let msgs = [
@@ -321,12 +323,48 @@ var Latinise={};Latinise.latin_map={
 "ₑ":"e",
 "ᵣ":"r",
 "ᵤ":"u",
+"🇫": "f",
+"🇪": "e",
+"🇺": "u",
+"🇷": "r",
 };
+
+  if(
+    message.content.includes("Screenshot_2022-08-06-14-50-34-676_com.discord.png") ||
+    message.content.includes("Screenshot_2022-08-06-14-57-08-083_com.discord.png") ||
+    message.content.includes("Screenshot_2022-08-06-14-48-52-792_com.discord.png")
+  ) {
+    try {
+      process.env.LAST_VICTIM = message.author.username;
+      message.author.send(msgs[Math.floor(Math.random()*msgs.length)] + `\n > Message incriminé : "${message.content}"`)
+      message.delete();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  axios
+  .get(`https://tenor.googleapis.com/v2/search?q=feur&key=${process.env.TENOR_KEY}&limit=30`)
+  .then(res => {
+    // console.log array of 
+    res.data.results.forEach(result => {
+      if(message.content.includes(result.itemurl)) {
+        try {
+          process.env.LAST_VICTIM = message.author.username;
+          message.author.send(msgs[Math.floor(Math.random()*msgs.length)] + `\n > Message incriminé : "${message.content}"`)
+          return message.delete();
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    })  
+  })
 
   String.prototype.similarize=function(){return this.replace(/[^A-Za-z0-9\[\] ]/g,function(a){return Similarize.similarMap[a]||a})};
   String.prototype.latinise=function(){return this.replace(/[^A-Za-z0-9\[\] ]/g,function(a){return Latinise.latin_map[a]||a})};
 
-  let clearedMsg = clearMsg.latinise().similarize().normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '');
+  let clearedMsgA = clearMsg.latinise().similarize();
+  let clearedMsg = clearedMsgA.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '')
  
   function removeDuplicate(string)
   {
