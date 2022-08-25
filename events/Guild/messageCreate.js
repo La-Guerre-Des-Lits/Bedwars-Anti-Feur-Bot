@@ -12,6 +12,8 @@ client.on("messageCreate", async (message) => {
   if (message.channel.type !== 0) return;
   if (message.author.bot) return;
 
+  console.log(message.content)
+
   let feur_list = [
     "feur",
     "f€ur",
@@ -121,14 +123,12 @@ client.on("messageCreate", async (message) => {
 
   let clearMsg = message.content.toLowerCase().replaceAll("\n", "")
 
-// Remplacer les charactères similaires aux lettres du mot "feur"
+
 var Similarize={};Similarize.similarMap={
   "€": "e",
   "£": "e",
   "3": "e",
-  "ƒ": "f",
-  "µ": "u",
-  "ù": "u",
+  "ƒ": "f"
 }
 
 var Latinise={};Latinise.latin_map={
@@ -346,6 +346,7 @@ var Latinise={};Latinise.latin_map={
   axios
   .get(`https://tenor.googleapis.com/v2/search?q=feur&key=${process.env.TENOR_KEY}&limit=30`)
   .then(res => {
+    // console.log array of 
     res.data.results.forEach(result => {
       if(message.content.includes(result.itemurl)) {
         try {
@@ -364,8 +365,6 @@ var Latinise={};Latinise.latin_map={
 
   let clearedMsgA = clearMsg.latinise().similarize();
   let clearedMsg = clearedMsgA.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '')
-
-  let member = (await message.guild.members.fetch(message.author))
  
   function removeDuplicate(string)
   {
@@ -377,35 +376,7 @@ var Latinise={};Latinise.latin_map={
      ).join('');
   }
 
-  if(member.nickname) {
-    let clearAuthor = member.nickname.latinise().similarize()
-    let clearedAuthor = clearAuthor.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toLowerCase();
-    if(feur_list.some((substring) => removeDuplicate(clearedAuthor).includes(substring)
-  ) &&
-    !authorized.some((substring) => removeDuplicate(clearedAuthor).includes(substring)
-  )){
-    try {
-      if(!message.guild.members.cache.get(client.user.id).permissions.has("ChangeNickname")|| !message.guild.members.cache.get(client.user.id).permissions.has("MANAGE_NICKNAMES")) {
-        return;
-      }
-      process.env.LAST_VICTIM = message.author.username;
-      if(message.guild.members.cache.get(client.user.id).permissions.has("ChangeNickname") && message.guild.members.cache.get(client.user.id).permissions.has("MANAGE_NICKNAMES")) {
-        await member.setNickname(message.author.username).then(() => {
-          message.author.send(`${msgs[Math.floor(Math.random()*msgs.length)]}\n > Pseudo : ${member.nickname}`)
-        });
-
-        if(!member.nickname) {
-        }else{
-          return;
-        }
-      }else {
-        message.author.send("Ptn de merde j'ai pas les perms pour changer ton pseudo")
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
-  }
+  console.log(removeDuplicate(clearedMsg))
 
   if (
     feur_list.some((substring) =>

@@ -10,7 +10,7 @@ module.exports = {
 };
 
 client.on("messageUpdate", async (oldMessage, newMessage) => {
-  if (newMessage.channel.type !== 0) return;
+    if (newMessage.channel.type !== 0) return;
   if (newMessage.author.bot) return;
 
   let feur_list = [
@@ -30,7 +30,7 @@ client.on("messageUpdate", async (oldMessage, newMessage) => {
     "۞eur",
     "f۞ur",
     "fe۞r",
-    "feu۞",
+    "feu۞"
   ];
 
   let msgs = [
@@ -329,28 +329,30 @@ var Latinise={};Latinise.latin_map={
 };
 
   if(
-    newMessage.content.includes("Screenshot_2022-08-06-14-50-34-676_com.discord.png") ||
-    newMessage.content.includes("Screenshot_2022-08-06-14-57-08-083_com.discord.png") ||
-    newMessage.content.includes("Screenshot_2022-08-06-14-48-52-792_com.discord.png")
+    message.content.includes("Screenshot_2022-08-06-14-50-34-676_com.discord.png") ||
+    message.content.includes("Screenshot_2022-08-06-14-57-08-083_com.discord.png") ||
+    message.content.includes("Screenshot_2022-08-06-14-48-52-792_com.discord.png")
   ) {
     try {
-      process.env.LAST_VICTIM = newMessage.author.username;
-      newMessage.author.send(msgs[Math.floor(Math.random()*msgs.length)] + `\n > Message incriminé : "${newMessage.content}"`)
-      newMessage.delete();
+      process.env.LAST_VICTIM = message.author.username;
+      message.author.send(msgs[Math.floor(Math.random()*msgs.length)] + `\n > Message incriminé : "${message.content}"`)
+      message.delete();
     } catch (err) {
       console.log(err);
     }
   }
 
+  
   axios
   .get(`https://tenor.googleapis.com/v2/search?q=feur&key=${process.env.TENOR_KEY}&limit=30`)
   .then(res => {
+    // console.log array of 
     res.data.results.forEach(result => {
-      if(newMessage.content.includes(result.itemurl)) {
+      if(message.content.includes(result.itemurl)) {
         try {
-          process.env.LAST_VICTIM = newMessage.author.username;
-          newMessage.author.send(msgs[Math.floor(Math.random()*msgs.length)] + `\n > Message incriminé : "${newMessage.content}"`)
-          return newMessage.delete();
+          process.env.LAST_VICTIM = message.author.username;
+          message.author.send(msgs[Math.floor(Math.random()*msgs.length)] + `\n > Message incriminé : "${message.content}"`)
+          return message.delete();
         } catch (err) {
           console.log(err);
         }
@@ -361,11 +363,8 @@ var Latinise={};Latinise.latin_map={
   String.prototype.similarize=function(){return this.replace(/[^A-Za-z0-9\[\] ]/g,function(a){return Similarize.similarMap[a]||a})};
   String.prototype.latinise=function(){return this.replace(/[^A-Za-z0-9\[\] ]/g,function(a){return Latinise.latin_map[a]||a})};
 
-  let clearedMsgA = clearMsg.latinise().similarize();
-  let clearedMsg = clearedMsgA.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '')
-
-  let member = (await newMessage.guild.members.fetch(newMessage.author))
-
+  let clearedMsg = clearMsg.latinise().similarize().normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '');
+ 
   function removeDuplicate(string)
   {
      return string.split('')
@@ -376,27 +375,7 @@ var Latinise={};Latinise.latin_map={
      ).join('');
   }
 
-  if(member.nickname) {
-  let clearAuthor = member.nickname.latinise().similarize()
-  let clearedAuthor = clearAuthor.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toLowerCase();
-  if(feur_list.some((substring) => removeDuplicate(clearedAuthor).includes(substring)
-  ) &&
-    !authorized.some((substring) => removeDuplicate(clearedAuthor).includes(substring)
-  )){
-    try {
-      process.env.LAST_VICTIM = newMessage.author.username;
-      if(newMessage.guild.members.cache.get(client.user.id).permissions.has("ChangeNickname") && newMessage.guild.members.cache.get(client.user.id).permissions.has("MANAGE_NICKNAMES")) {
-        await member.setNickname(newMessage.author.username).then(() => {
-          newMessage.author.send(`${msgs[Math.floor(Math.random()*msgs.length)]}\n > Pseudo : ${member.nickname}`)
-        })
-      }else {
-        newMessage.author.send("Ptn de merde j'ai pas les perms pour changer ton pseudo")
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
-  }
+  console.log(removeDuplicate(clearedMsg))
 
   if (
     feur_list.some((substring) =>
