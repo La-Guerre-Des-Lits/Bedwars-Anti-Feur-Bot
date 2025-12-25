@@ -27,6 +27,7 @@ Nous avons créé ce bot Discord pour un serveur privé entre amis, mais vous po
 
 ## Auteur -- Author
 
-* **Adloya** - *Fullstack Developer* - [Adloya](https://github.com/Adloya/) - *Built the bot*
+* **Adloya** - [Adloya](https://github.com/Adloya/) - *Built the bot*
 
 ### 2022 - La Guerre Des Lits
+
